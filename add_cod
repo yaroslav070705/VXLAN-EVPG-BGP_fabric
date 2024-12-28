@@ -1,0 +1,6 @@
+создать цод с топологией leaf-spine(по аналогии с cod1 и cod2)
+ip для хостов: x.0.1.y
+ip для leaf: x.0.2.y
+ip для spine: x.0.3.y
+задать на leaf и spine route-id
+открыть на spine l3-routed-interface в сторону каждого spine из других ЦОД
