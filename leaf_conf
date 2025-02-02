@@ -1,0 +1,118 @@
+    interface {
+        gigabit-ethernet "te-1/1/1" {
+            family {
+                ethernet-switching {
+                    native-vlan-id: 3000
+                }
+            }
+        }
+        gigabit-ethernet "te-1/1/3" {
+            family {
+                ethernet-switching {
+                    native-vlan-id: 101
+                }
+            }
+        }
+        gigabit-ethernet "te-1/1/4" {
+            family {
+                ethernet-switching {
+                    native-vlan-id: 101
+                }
+            }
+        }
+    }
+    ip {
+        routing {
+            enable: true
+        }
+    }
+    l3-interface {
+        loopback lpbc {
+            address 1.2.1.1 {
+                prefix-length: 32
+            }
+        }
+        vlan-interface vlan3000 {
+            address 100.0.1.2 {
+                prefix-length: 30
+            }
+        }
+        vlan-interface vlan101 {
+            address 100.1.101.1 {
+                prefix-length: 30
+            }
+        }
+        vlan-interface vlan102 {
+            address 100.1.102.1 {
+                prefix-length: 30
+            }
+        }
+        vlan-interface vlan103 {
+            address 100.1.103.1 {
+                prefix-length: 30
+            }
+        }
+    }
+    protocols {
+        bgp {
+            local-as: 100
+            ebgp-requires-policy: false
+            router-id: 1.2.1.1
+            neighbor 100.0.1.1 {
+                remote-as: "100"
+                ipv4-unicast {
+                    next-hop-self {
+                    }
+                }
+                evpn {
+                    activate: true
+                }
+            }
+            ipv4-unicast {
+                network 1.2.1.1/32
+            }
+            evpn {
+                advertise-all-vni {
+                }
+                advertise-svi-ip {
+                }
+            }
+        }
+    }
+    vlans {
+        vlan-id 101 {
+            l3-interface: "vlan101"
+        }
+        vlan-id 102 {
+            l3-interface: "vlan102"
+        }
+        vlan-id 103 {
+            l3-interface: "vlan103"
+        }
+        vlan-id 3000 {
+            l3-interface: "vlan3000"
+        }
+    }
+    vxlans {
+        source-interface lpbc {
+            address: 1.2.1.1
+        }
+        vni 101 {
+            decapsulation {
+                mode: "service-vlan-per-port"
+            }
+            vlan: 101
+        }
+        vni 102 {
+            decapsulation {
+                mode: "service-vlan-per-port"
+            }
+            vlan: 102
+        }
+        vni 103 {
+            decapsulation {
+                mode: "service-vlan-per-port"
+            }
+            vlan: 103
+        }
+    }
